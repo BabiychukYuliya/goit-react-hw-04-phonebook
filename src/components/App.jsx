@@ -43,13 +43,9 @@ export const App = () => {
 
   // Фільтрує та повертає результат фільтру
 
-  const filterContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
-
-    contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
+  const visibleContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const deleteContact = contactId => {
     setContacts(prevState =>
@@ -57,14 +53,14 @@ export const App = () => {
     );
   };
 
-  const filteredResults = filterContacts();
+
   return (
     <div>
       <h1>Phonebook</h1>
       <Form onSubmit={handleFormSubmit} />
       <h2>Contacts</h2>
       <Filter value={filter} onChange={onChangeFilter} />
-      <ContactList contacts={filteredResults} onDeleteContact={deleteContact} />
+      <ContactList contacts={visibleContacts} onDeleteContact={deleteContact} />
     </div>
   );
 };
