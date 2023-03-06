@@ -1,36 +1,30 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import ContactList from './Phonebook/Phonebook';
-import { Form } from './ContactForm/ContactForm';
+import Form from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import { nanoid } from 'nanoid';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-
-  componentDidMount() {
-    const savedContacts = localStorage.getItem('contacts');
+const getInitialContacts = () => {
+  const savedContacts = localStorage.getItem('contacts');
+  if (savedContacts !== null) {
     const parsedContacts = JSON.parse(savedContacts);
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-      return;
-    }
+    return parsedContacts;
   }
+  return getInitialContacts;
+};
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+export const App = () => {
+  const [contacts, setContacts] = useState(getInitialContacts);
+  const [filter, setFilter] = useState('');
 
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-
-  handleFormSubmit = newContact => {
+  const handleFormSubmit = newContact => {
     newContact.id = nanoid();
 
-    const duplicateName = this.state.contacts.find(
+    const duplicateName = contacts.find(
       contact => contact.name === newContact.name
     );
 
@@ -38,22 +32,18 @@ export class App extends Component {
       alert(`${newContact.name} is already in contacts.`);
     }
 
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
+    setContacts(prevState => [...prevState, newContact]);
   };
 
   // Записує в state значення поля фільтрації
-  onChangeFilter = evt => {
-    this.setState({ filter: evt.target.value });
+  const onChangeFilter = evt => {
+    setFilter(evt.target.value);
     // console.log(evt.target.value);
   };
 
   // Фільтрує та повертає результат фільтру
 
-  filterContacts = () => {
-    const { contacts, filter } = this.state;
-
+  const filterContacts = () => {
     const normalizedFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -61,25 +51,20 @@ export class App extends Component {
     );
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+  const deleteContact = contactId => {
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
+    );
   };
 
-  render() {
-    const filteredResults = this.filterContacts();
-    return (
-      <div>
-        <h1>Phonebook</h1>
-        <Form onSubmit={this.handleFormSubmit} />
-        <h2>Contacts</h2>
-        <Filter value={this.state.filter} onChange={this.onChangeFilter} />
-        <ContactList
-          contacts={filteredResults}
-          onDeleteContact={this.deleteContact}
-        />
-      </div>
-    );
-  }
-}
+  const filteredResults = filterContacts();
+  return (
+    <div>
+      <h1>Phonebook</h1>
+      <Form onSubmit={handleFormSubmit} />
+      <h2>Contacts</h2>
+      <Filter value={filter} onChange={onChangeFilter} />
+      <ContactList contacts={filteredResults} onDeleteContact={deleteContact} />
+    </div>
+  );
+};

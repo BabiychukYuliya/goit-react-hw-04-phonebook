@@ -1,32 +1,28 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { FormStyle, Label, Input, ButtonAdd } from './ContactForm.styled';
 
-export class Form extends Component {
-  state = {
-    name: '',
-    number: '',
+const Form = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleChangeName = e => {
+    setName(e.target.value);
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
+  const handleChangeNumber = e => {
+    setNumber(e.target.value);
   };
 
-  handleSubmit = evt => {
+  const handleSubmit = evt => {
     evt.preventDefault();
-      this.props.onSubmit(this.state);
-      this.reset();
-    };
-    
-    reset = () => {
-        this.setState({ name: '', number: '' });
-    }
+    onSubmit({ name, number });
+    setName('');
+    setNumber('');
+  };
 
-  render() {
-    const { name, number } = this.state;
-    return (
-      <FormStyle>
-      <form onSubmit={this.handleSubmit}>
+  return (
+    <FormStyle>
+      <form onSubmit={handleSubmit}>
         <Label>
           Name
           <Input
@@ -36,7 +32,7 @@ export class Form extends Component {
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
             value={name}
-            onChange={this.handleChange}
+            onChange={handleChangeName}
           />
         </Label>
 
@@ -49,14 +45,13 @@ export class Form extends Component {
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
             value={number}
-            onChange={this.handleChange}
+            onChange={handleChangeNumber}
           />
-            </Label>
-            <ButtonAdd>Add contact</ButtonAdd>
-        </form>
-        </FormStyle>
-    );
-  }
-}
+        </Label>
+        <ButtonAdd>Add contact</ButtonAdd>
+      </form>
+    </FormStyle>
+  );
+};
 
-
+export default Form;
