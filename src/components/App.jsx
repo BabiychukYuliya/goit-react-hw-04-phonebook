@@ -43,21 +43,10 @@ export const App = () => {
 
   // Фільтрує та повертає результат фільтру
 
-  const filterContacts = () => {
-    const query = filter.toLocaleLowerCase();
-
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(query)
-    );
-
-    // if (query && !filteredContacts.length) {
-    //   Notiflix.Notify.warning(
-    //     'No contacts matching your request',
-    //     notifySettings
-    //   );
-    // }
-
-    return filteredContacts;
+  const filterContacts = (name) => {
+            return contacts.filter(e =>
+            e.name.toLowerCase().includes(name.toLowerCase())
+            )
   };
 
   const deleteContact = contactId => {
@@ -73,7 +62,7 @@ export const App = () => {
       <Form onSubmit={handleFormSubmit} />
       <h2>Contacts</h2>
       <Filter value={filter} onChange={onChangeFilter} />
-      <ContactList contacts={filterContacts()} onDeleteContact={deleteContact} />
+      <ContactList contacts={filterContacts(filter)} onDeleteContact={deleteContact} />
     </div>
   );
 };
