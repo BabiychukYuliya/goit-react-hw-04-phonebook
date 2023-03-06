@@ -43,9 +43,22 @@ export const App = () => {
 
   // Фільтрує та повертає результат фільтру
 
-  const visibleContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const filterContacts = () => {
+    const query = filter.toLocaleLowerCase();
+
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLocaleLowerCase().includes(query)
+    );
+
+    // if (query && !filteredContacts.length) {
+    //   Notiflix.Notify.warning(
+    //     'No contacts matching your request',
+    //     notifySettings
+    //   );
+    // }
+
+    return filteredContacts;
+  };
 
   const deleteContact = contactId => {
     setContacts(prevState =>
@@ -60,7 +73,7 @@ export const App = () => {
       <Form onSubmit={handleFormSubmit} />
       <h2>Contacts</h2>
       <Filter value={filter} onChange={onChangeFilter} />
-      <ContactList contacts={visibleContacts} onDeleteContact={deleteContact} />
+      <ContactList contacts={filterContacts()} onDeleteContact={deleteContact} />
     </div>
   );
 };
