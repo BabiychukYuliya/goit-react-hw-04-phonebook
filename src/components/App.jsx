@@ -4,17 +4,19 @@ import Form from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import { nanoid } from 'nanoid';
 
-const getInitialContacts = () => {
-  const savedContacts = localStorage.getItem('contacts');
-  if (savedContacts !== null) {
-    const parsedContacts = JSON.parse(savedContacts);
-    return parsedContacts;
-  }
-  return getInitialContacts;
-};
+// const getInitialContacts = () => {
+//   const savedContacts = localStorage.getItem('contacts');
+//   if (savedContacts !== null) {
+//     const parsedContacts = JSON.parse(savedContacts);
+//     return parsedContacts;
+//   }
+//   return getInitialContacts;
+// };
+const mountContacts = localStorage.getItem('contacts');
+const parseContacts = JSON.parse(mountContacts);
 
 export const App = () => {
-  const [contacts, setContacts] = useState(getInitialContacts);
+  const [contacts, setContacts] = useState(parseContacts || []);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
