@@ -32,6 +32,7 @@ export const App = () => {
 
     if (duplicateName) {
       alert(`${newContact.name} is already in contacts.`);
+      return;
     }
 
     setContacts(prevState => [...prevState, newContact]);
